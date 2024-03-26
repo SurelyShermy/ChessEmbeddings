@@ -1,0 +1,1 @@
+#ssh into regan server to access aifs, and preprocess datafiles with necessary information
