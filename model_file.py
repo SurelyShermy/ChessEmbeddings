@@ -29,6 +29,7 @@ class ChessboardEmbeddingModel(nn.Module):
         embedding = self.fc(x)
         return embedding
 
+
 class DistanceModel(nn.Module):
     def __init__(self, embedding_size):
         super(DistanceModel, self).__init__()
