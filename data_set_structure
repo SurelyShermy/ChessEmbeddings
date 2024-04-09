@@ -13,6 +13,7 @@ Dataset Folder
 					- disctionary
 						- turn number
 						- eval board
+						- custom utility avg 11-max
 						- move played
 						- engine move
 						- fen
