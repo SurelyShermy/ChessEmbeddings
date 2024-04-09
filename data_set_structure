@@ -1,0 +1,27 @@
+
+Dataset Folder
+	Tournament 0 folder :
+	Tournament 1 folder :
+		game_0.npy
+		game_1.npy
+		game_2.npy ; dictionary file / dictionary of dictionary file/ list of dictionary
+			dictionary
+				- data_subset (train/test/val1/val2)
+				- Type/ time
+				- Elos[p1,p2]
+				- Engine 0;
+					- disctionary
+						- turn number
+						- eval board
+						- move played
+						- engine move
+						- fen
+						- time for the move
+						- total time passed
+
+				- Engine 1;
+					-
+
+Classical - 1hr +
+Rapid 10 mins -30 min
+Blitz - 3- 5 min
