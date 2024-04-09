@@ -1,6 +1,7 @@
 import re
 import os
 from Engines_utility_table import get_custom_utility
+import numpy as np
 def parse_games_from_aif(filename, content):
     """
     Parses games from the AIF content and returns structured data.
@@ -96,64 +97,64 @@ def parse_games_from_aif(filename, content):
 
     return
 
-import chess
+# import chess
 
-def extract_positions_from_game(game_data):
-    """
-    Extracts board positions from a single game's data.
+# def extract_positions_from_game(game_data):
+#     """
+#     Extracts board positions from a single game's data.
 
-    Parameters:
-    - game_data: A dictionary containing the game's information, including a list of moves.
+#     Parameters:
+#     - game_data: A dictionary containing the game's information, including a list of moves.
 
-    Returns:
-    - A list of tuples, where each tuple contains a move and the corresponding FEN string of the board after the move.
-    """
-    # Initialize a chess board with the starting position
-    board = chess.Board()
+#     Returns:
+#     - A list of tuples, where each tuple contains a move and the corresponding FEN string of the board after the move.
+#     """
+#     # Initialize a chess board with the starting position
+#     board = chess.Board()
 
-    # Placeholder for the results
-    positions_after_moves = []
+#     # Placeholder for the results
+#     positions_after_moves = []
 
-    # Assuming 'moves' is a list of strings representing the moves in standard algebraic notation
-    moves = game_data.get('moves', [])
+#     # Assuming 'moves' is a list of strings representing the moves in standard algebraic notation
+#     moves = game_data.get('moves', [])
 
-    for move_san in moves:
-        try:
-            # Parse the move and apply it to the board
-            move = board.parse_san(move_san)
-            board.push(move)
+#     for move_san in moves:
+#         try:
+#             # Parse the move and apply it to the board
+#             move = board.parse_san(move_san)
+#             board.push(move)
 
-            # Append the current move and board position (in FEN) to the results list
-            positions_after_moves.append((move_san, board.fen()))
-        except ValueError as e:
-            # Handle invalid moves or notation errors
-            print(f"Error processing move '{move_san}': {e}")
-            break
+#             # Append the current move and board position (in FEN) to the results list
+#             positions_after_moves.append((move_san, board.fen()))
+#         except ValueError as e:
+#             # Handle invalid moves or notation errors
+#             print(f"Error processing move '{move_san}': {e}")
+#             break
 
-    return positions_after_moves
-
-
-import pandas as pd
+#     return positions_after_moves
 
 
-def create_data_frame(games_data):
-    """
-    Converts games data into a pandas DataFrame.
+# import pandas as pd
 
-    Parameters:
-    - games_data: A list of dictionaries, where each dictionary contains data for a single game.
 
-    Returns:
-    - A pandas DataFrame where each row represents a game and each column represents a piece of data about that game.
-    """
-    # Ensure games_data is a list of dictionaries
-    if not all(isinstance(game, dict) for game in games_data):
-        raise ValueError("games_data must be a list of dictionaries.")
+# def create_data_frame(games_data):
+#     """
+#     Converts games data into a pandas DataFrame.
 
-    # Convert the list of dictionaries to a DataFrame
-    df = pd.DataFrame(games_data)
+#     Parameters:
+#     - games_data: A list of dictionaries, where each dictionary contains data for a single game.
 
-    return df
+#     Returns:
+#     - A pandas DataFrame where each row represents a game and each column represents a piece of data about that game.
+#     """
+#     # Ensure games_data is a list of dictionaries
+#     if not all(isinstance(game, dict) for game in games_data):
+#         raise ValueError("games_data must be a list of dictionaries.")
+
+#     # Convert the list of dictionaries to a DataFrame
+#     df = pd.DataFrame(games_data)
+
+#     return df
 # games_data = [
 #     {
 #         "title": "Game 1",
@@ -180,18 +181,18 @@ def create_data_frame(games_data):
 # # Display the resulting DataFrame
 # print(df_games)
 
-import numpy as np
 
-def average_utility(games_data):
-    row_averages = np.mean(games_data[:, 14:], axis=1)
 
-def main():
-    # Read the content of the AIF file
-    with open("WijkTataBJan2024cat13_SF11d20-30pv64.aif", "r") as file:
-        content = file.read()
+# def average_utility(games_data):
+#     row_averages = np.mean(games_data[:, 14:], axis=1)
 
-    # Parse games from the AIF content
-    parse_games_from_aif("WijkTataBJan2024cat13_SF11d20-30pv64.aif", content)
-    return
-if __name__ == "__main__":
-    main()
+# def main():
+#     # Read the content of the AIF file
+#     with open("WijkTataBJan2024cat13_SF11d20-30pv64.aif", "r") as file:
+#         content = file.read()
+
+#     # Parse games from the AIF content
+#     parse_games_from_aif("WijkTataBJan2024cat13_SF11d20-30pv64.aif", content)
+#     return
+# if __name__ == "__main__":
+#     main()
