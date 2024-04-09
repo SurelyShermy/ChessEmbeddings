@@ -1,38 +1,57 @@
 import re
+import os
 
-
-def parse_games_from_aif(content):
+def parse_games_from_aif(filename, content):
     """
     Parses games from the AIF content and returns structured data.
 
     This example assumes games are separated by a distinct pattern or keyword,
     and each game contains structured data that can be extracted using regular expressions or string manipulation.
     """
-
-    # Placeholder list to store each game's data
+    # all filenames follow the convention "<tournamentname>_<enginename>d<depth>.aif"
+    splitfilename = filename.split("_")
+    tournament_name = splitfilename[0]
+    engine_name = splitfilename[1].split("d")[0]
     games_data = []
+    games = content.split("; AIF v1.0 Kenneth Regan and Tamal Biswas")[1:]  # Skipping the first split before the first game
 
-    # Example: Assuming each game starts with a unique identifier like "Game Start"
-    # and ends with "Game End" (these would be replaced with actual identifiers from the AIF file)
-    game_sections = content.split("Game Start")[1:]  # Skipping the first split before the first game
+    for game in games:
+        pattern = r'\[GameID "(.*?)"\]'
+        match = re.search(pattern, game)
+        if match:
+            gameid = match.group(1)
+        moves = game.split("[EndMove]")
+        header_moves = moves.split('[GID "'+gameid+'"]', 1)
+        header = header_moves[0]
+        moves = header_moves[1]
+        game_data = {}
+        for move in moves:
+            eval_pattern = r'\[Eval "(.*?)"\]'
+            eval_match = re.search(eval_pattern, move)
+            if eval_match:
+                eval = eval_match.group(1)
+                game_data["Eval"] = eval
+            turn_pattern = r'\[Turn "(.*?)"\]'
+            turn_match = re.search(turn_pattern, move)
+            if turn_match:
+                turn = turn_match.group(1)
+                game_data["Turn"] = turn
+            move_played_pattern = r'\[MovePlayed "(.*?)"\]'
+            move_played_match = re.search(move_played_pattern, move)
+            if move_played_match:
+                move_played = move_played_match.group(1)
+                game_data["MovePlayed"] = move_played
+            engine_move_pattern = r'\[EngineMove "(.*?)"\]'
+            engine_move_match = re.search(engine_move_pattern, move)
+            if engine_move_match:
+                engine_move = engine_move_match.group(1)
+                game_data["EngineMove"] = engine_move
+            fen_pattern = r'\[FEN "(.*?)"\]'
+            fen_match = re.search(fen_pattern, move)
+            if fen_match:
+                fen = fen_match.group(1)
+                game_data["FEN"] = fen
 
-    for section in game_sections:
-        game_info = section.split("Game End")[0]  # Get content up to "Game End"
-
-        # Extract information using regular expressions or string methods
-        # This is highly speculative and needs to be adjusted to match the actual content structure
-
-        # Example: Extracting a title assuming it's labeled as "Title: <title>"
-        title_match = re.search(r"Title: (.+)", game_info)
-        title = title_match.group(1) if title_match else None
-
-        # Continue extracting other details in a similar fashion...
-
-        # Assuming extracting moves, which might be listed line by line or in another format
-        moves = []
-        for line in game_info.split("\n"):
-            if "Move:" in line:  # Speculative example
-                moves.append(line.replace("Move: ", "").strip())
 
         # Append structured game data to the list
         games_data.append({
@@ -154,3 +173,9 @@ df_games = create_data_frame(games_data)
 
 # Display the resulting DataFrame
 print(df_games)
+
+import numpy as np
+
+def average_utility(games_data):
+    row_averages = np.mean(games_data[:, 14:], axis=1)
+
