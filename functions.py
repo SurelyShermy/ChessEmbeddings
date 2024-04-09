@@ -14,8 +14,9 @@ def parse_games_from_aif(filename, content):
     engine_name = splitfilename[1].split("d")[0]
     games_data = []
     games = content.split("; AIF v1.0 Kenneth Regan and Tamal Biswas")[1:]  # Skipping the first split before the first game
-    if not os.path.exists(tournament_name):
-        os.mkdir(tournament_name)
+    destination = os.path.join("/shared/projects/regan/CSE250A8/CSE702_Embeddings/game_dataset/", tournament_name)
+    if not os.path.exists(destination):
+        os.mkdir(destination)
     total = len(games)
     train_limit = int(total * 0.6)
     test_limit = train_limit + int(total * 0.2)
@@ -82,12 +83,12 @@ def parse_games_from_aif(filename, content):
                 engine_game_data["FEN"] = fen
             game_dictionary[engine_name].append(engine_game_data)
             engine_game_data = {}
-        if(gameid+".npy" in os.listdir(tournament_name)):
+        if(gameid+".npy" in os.listdir(destination)):
             game_dictionary = np.load(gameid+".npy", allow_pickle=True).item()
             game_dictionary[engine_name] = engine_game_data
             np.save(gameid+".npy", game_dictionary)
         else:
-            file_path = os.path.join(tournament_name, gameid + ".npy")
+            file_path = os.path.join(destination, gameid + ".npy")
             print("Saving to:", file_path)  # Debug print to check the file path
             with open(file_path, "wb") as file:
                 np.save(file, game_dictionary)
