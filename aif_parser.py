@@ -18,5 +18,5 @@ def process_aif_files(directory):
 
 if __name__ == "__main__":
     # Specify the directory containing the .aif files
-    directory = './'
+    directory = '/shared/projects/regan/CSE250A8/CSE702_Embeddings'
     process_aif_files(directory)
