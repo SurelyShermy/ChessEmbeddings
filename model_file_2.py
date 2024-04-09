@@ -27,6 +27,7 @@ class ChessboardEmbeddingModel(nn.Module):
         self.relu4 = nn.ReLU(inplace=True)
         self.fc2 = nn.Linear(in_features=256, out_features=embedding_size)
 
+
     def forward(self, x, board_number, elo_ratings):
         # Reshape the input tensor to (batch_size, channels, depth, height, width)
         x = x.permute(0, 3, 2, 1, 4).contiguous()
