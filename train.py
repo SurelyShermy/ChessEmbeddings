@@ -3,8 +3,11 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, Dataset
 import numpy as np
-from train import get_dataloader
-from prep_dataset_remotely import prep_data
+from data_loader import get_dataloader
+from generate_dataset import prep_data
+from embedding_model import FullyConnectedNN
+
+import os
 # Assuming `ChessBoardEmbeddingModel` is defined as per previous discussions,
 # focusing on attention mechanisms for embedding generation.
 
@@ -35,24 +38,26 @@ def contrastive_loss(embedding1, embedding2, distance, margin=1.0):
 
 # Model, optimizer, and data loading
 
-train_board_pairs, train_distances = [...], [...]  # Training data
-val_board_pairs, val_distances = [...], [...]      # Validation data
+# train_board_pairs, train_distances = [...], [...]  # Training data
+# val_board_pairs, val_distances = [...], [...]      # Validation data
+directory = "./game_dataset" 
+train_board_pairs, train_distances, val_board_pairs, val_distances = prep_data(directory)
 
-train_board_pairs, train_distances, val_board_pairs, val_distances = prep_data(train_board_pairs, train_distances, val_board_pairs, val_distances)
+train_dataloader = get_dataloader(train_board_pairs, train_distances, batch_size=64)
+val_dataloader = get_dataloader(val_board_pairs, val_distances, batch_size=64)
 
-train_dataloader = get_dataloader(train_board_pairs, train_distances, batch_size=32)
-val_dataloader = get_dataloader(val_board_pairs, val_distances, batch_size=32)
-
-model = ChessBoardEmbeddingModel().to(device)
-optimizer = optim.Adam(model.parameters(), lr=0.001)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = FullyConnectedNN().to(device)
+optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 best_val_loss = float('inf')
+#save_dir = '/vscratch/grp-regan/Chess_Embeddings/CSE702_Embeddings/experiments/experiment1'
+save_dir = '/save_dir/'
 
 num_epochs = 10
 for epoch in range(num_epochs):
     model.train()
-    train_loss = 0
+    train_loss = 100000
     for batch in train_dataloader:
         board1, board2, distance = [b.to(device) for b in (batch['board1'], batch['board2'], batch['distance'])]
 
@@ -82,7 +87,7 @@ for epoch in range(num_epochs):
 
     if val_loss < best_val_loss:
         best_val_loss = val_loss
-        torch.save(model.state_dict(), 'best_chess_embedding_model.pth')
+        torch.save(model.state_dict(), os.path.join(directory, f'/{epoch}_model.pth'))
         print(f"Saved new best model at epoch {epoch + 1} with Validation Loss = {val_loss:.4f}")
 
-torch.save(model.state_dict(), 'chess_embedding_model.pth')
+torch.save(model.state_dict(), os.path.join(directory,'/chess_embedding_model.pth'))

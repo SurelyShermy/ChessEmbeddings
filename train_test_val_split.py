@@ -1,1 +1,0 @@
-#All incoming data must fall into 3 buckets, 70 | 20 | 10| for training, testing, and validation respectively.
