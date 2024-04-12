@@ -3,7 +3,8 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, Dataset
 import numpy as np
-
+from train import get_dataloader
+from prep_dataset_remotely import prep_data
 # Assuming `ChessBoardEmbeddingModel` is defined as per previous discussions,
 # focusing on attention mechanisms for embedding generation.
 
@@ -36,6 +37,8 @@ def contrastive_loss(embedding1, embedding2, distance, margin=1.0):
 
 train_board_pairs, train_distances = [...], [...]  # Training data
 val_board_pairs, val_distances = [...], [...]      # Validation data
+
+train_board_pairs, train_distances, val_board_pairs, val_distances = prep_data(train_board_pairs, train_distances, val_board_pairs, val_distances)
 
 train_dataloader = get_dataloader(train_board_pairs, train_distances, batch_size=32)
 val_dataloader = get_dataloader(val_board_pairs, val_distances, batch_size=32)

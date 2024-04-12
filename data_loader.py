@@ -12,13 +12,9 @@ class ChessBoardDataset(Dataset):
     """Chess board pairs dataset."""
 
     def __init__(self, board_pairs, distances, transform=None):
-        """
-        Args:
-            board_pairs (list of tuples): List where each tuple has two numpy arrays representing board states.
-            distances (list): List of distances between board pairs.
-            transform (callable, optional): Optional transform to be applied on a sample.
-        """
+        
         self.board_pairs = board_pairs
+
         self.distances = distances
         self.transform = transform
 
