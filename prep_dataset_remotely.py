@@ -18,18 +18,26 @@ def prep_data(train_board_pairs, train_distances, val_board_pairs, val_distances
                 valset.append(game_data)
     for game in trainset:
         for engine in game:
-            for i in range(len(engine)-2):
-                board1 = engine[i]["FEN"]
-                board2 = engine[i+1]["FEN"]
-                distance = engine[i]["Eval"] - engine[i+1]["Eval"]
-                train_board_pairs.append((board1, board2))
-                train_distances.append(distance)
+            try:
+                for i in range(len(engine)-2):
+                    board1 = engine[i]["FEN"]
+                    board2 = engine[i+1]["FEN"]
+                    distance = engine[i]["Eval"] - engine[i+1]["Eval"]
+                    train_board_pairs.append((board1, board2))
+                    train_distances.append(distance)
+            except:
+                print(f"Error in {engine} in valset")
+                pass
     for game in valset:
         for engine in game:
-            for i in range(len(engine)-2):
-                board1 = engine[i]["FEN"]
-                board2 = engine[i+1]["FEN"]
-                distance = engine[i]["Eval"] - engine[i+1]["Eval"]
-                val_board_pairs.append((board1, board2))
-                val_distances.append(distance)
+            try:
+                for i in range(len(engine)-2):
+                    board1 = engine[i]["FEN"]
+                    board2 = engine[i+1]["FEN"]
+                    distance = engine[i]["Eval"] - engine[i+1]["Eval"]
+                    val_board_pairs.append((board1, board2))
+                    val_distances.append(distance)
+            except:
+                print(f"Error in {engine} in valset")
+                pass
     return train_board_pairs, train_distances, val_board_pairs, val_distances
