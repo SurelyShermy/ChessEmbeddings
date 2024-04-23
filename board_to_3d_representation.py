@@ -30,7 +30,7 @@ def fen_to_onehot(fen):
                 piece_idx = pieces.index(char)
                 piece_type = piece_idx % 6
                 color = piece_idx // 6
-                onehot[i, col, piece_type, color] = 1
+                onehot[i, col, piece_type, color] = 1.0
                 col += 1
     
     return onehot
@@ -39,4 +39,4 @@ def fen_to_onehot(fen):
 fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 onehot_matrix = fen_to_onehot(fen)
 
-print(onehot_matrix.shape)  # Should be (8, 8, 6, 2)
+# print(onehot_matrix.shape)  # Should be (8, 8, 6, 2)

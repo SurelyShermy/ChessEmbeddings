@@ -11,6 +11,7 @@ class FullyConnectedNN(nn.Module):
         self.fc3 = nn.Linear(128, 1)         # Third fully connected layer, outputting a single value for binary classification
 
     def forward(self, x):
+        x = x.float()
         x = self.flatten(x)   # Flatten the input
         x = F.relu(self.fc1(x))  # Apply ReLU activation function after the first layer
         x = F.relu(self.fc2(x))  # Apply ReLU activation function after the second layer

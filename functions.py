@@ -2,7 +2,7 @@ import re
 import os
 from Engines_utility_table import get_custom_utility
 import numpy as np
-def parse_games_from_aif(filename, content):
+def parse_games_from_aif(filename, content, save_dir):
     """
     Parses games from the AIF content and returns structured data.
 
@@ -15,7 +15,8 @@ def parse_games_from_aif(filename, content):
     engine_name = splitfilename[1].split("d")[0]
     games_data = []
     games = content.split("; AIF v1.0 Kenneth Regan and Tamal Biswas")[1:]  # Skipping the first split before the first game
-    destination = os.path.join("/shared/projects/regan/CSE250A8/CSE702_Embeddings/game_dataset/", tournament_name)
+    # destination = os.path.join("/shared/projects/regan/CSE250A8/CSE702_Embeddings/game_dataset/", tournament_name)
+    destination = os.path.join(save_dir, tournament_name)
     if not os.path.exists(destination):
         os.mkdir(destination)
     total = len(games)
@@ -53,48 +54,49 @@ def parse_games_from_aif(filename, content):
         if blackelo_match:
             blackelo = blackelo_match.group(1)
             game_dictionary["BlackElo"] = blackelo
-        game_dictionary[engine_name] = []
+
+        game_dictionary["Engines"] = {}
+        game_dictionary["Engines"][engine_name] = []
         moves = game.split("[EndMove]")
-        engine_game_data = {}
+        engine_game_data = []
         for move in moves:
+            engine_move_data = {}
             eval_pattern = r'\[Eval "(.*?)"\]'
             eval_match = re.search(eval_pattern, move)
             if eval_match:
                 eval = eval_match.group(1)
-                engine_game_data["Eval"] = eval
+                engine_move_data["Eval"] = eval
             turn_pattern = r'\[Turn "(.*?)"\]'
             turn_match = re.search(turn_pattern, move)
             if turn_match:
                 turn = turn_match.group(1)
-                engine_game_data["Turn"] = turn
+                engine_move_data["Turn"] = turn
             move_played_pattern = r'\[MovePlayed "(.*?)"\]'
             move_played_match = re.search(move_played_pattern, move)
             if move_played_match:
                 move_played = move_played_match.group(1)
-                engine_game_data["MovePlayed"] = move_played
+                engine_move_data["MovePlayed"] = move_played
             engine_move_pattern = r'\[EngineMove "(.*?)"\]'
             engine_move_match = re.search(engine_move_pattern, move)
             if engine_move_match:
                 engine_move = engine_move_match.group(1)
-                engine_game_data["EngineMove"] = engine_move
+                engine_move_data["EngineMove"] = engine_move
             fen_pattern = r'\[FEN "(.*?)"\]'
             fen_match = re.search(fen_pattern, move)
             if fen_match:
                 fen = fen_match.group(1)
-                engine_game_data["FEN"] = fen
-            game_dictionary[engine_name].append(engine_game_data)
-            engine_game_data = {}
+                engine_move_data["FEN"] = fen
+            engine_game_data.append(engine_move_data)
+        game_dictionary["Engines"][engine_name]= engine_game_data
         if(gameid+".npy" in os.listdir(destination)):
             game_dictionary = np.load(gameid+".npy", allow_pickle=True).item()
-            game_dictionary[engine_name] = engine_game_data
+            game_dictionary["Engines"][engine_name]= engine_game_data
             np.save(gameid+".npy", game_dictionary)
         else:
             file_path = os.path.join(destination, gameid + ".npy")
             print("Saving to:", file_path)  # Debug print to check the file path
             with open(file_path, "wb") as file:
                 np.save(file, game_dictionary)
-        game_dictionary = {}
-
     return
 
 # import chess

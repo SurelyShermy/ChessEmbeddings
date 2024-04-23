@@ -42,7 +42,6 @@ def contrastive_loss(embedding1, embedding2, distance, margin=1.0):
 # val_board_pairs, val_distances = [...], [...]      # Validation data
 directory = "./game_dataset" 
 train_board_pairs, train_distances, val_board_pairs, val_distances = prep_data(directory)
-
 train_dataloader = get_dataloader(train_board_pairs, train_distances, batch_size=64)
 val_dataloader = get_dataloader(val_board_pairs, val_distances, batch_size=64)
 
@@ -50,7 +49,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = FullyConnectedNN().to(device)
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-best_val_loss = float('inf')
+best_val_loss = np.double('inf')
 #save_dir = '/vscratch/grp-regan/Chess_Embeddings/CSE702_Embeddings/experiments/experiment1'
 save_dir = '/save_dir/'
 
@@ -60,7 +59,8 @@ for epoch in range(num_epochs):
     train_loss = 100000
     for batch in train_dataloader:
         board1, board2, distance = [b.to(device) for b in (batch['board1'], batch['board2'], batch['distance'])]
-
+        board1 = board1.float()
+        board2 = board2.float()
         optimizer.zero_grad()
         embedding1, embedding2 = model(board1), model(board2)
         loss = contrastive_loss(embedding1, embedding2, distance)
@@ -87,7 +87,7 @@ for epoch in range(num_epochs):
 
     if val_loss < best_val_loss:
         best_val_loss = val_loss
-        torch.save(model.state_dict(), os.path.join(directory, f'/{epoch}_model.pth'))
+        # torch.save(model.state_dict(), os.path.join(directory, f'/{epoch}_model.pth'))
         print(f"Saved new best model at epoch {epoch + 1} with Validation Loss = {val_loss:.4f}")
 
 torch.save(model.state_dict(), os.path.join(directory,'/chess_embedding_model.pth'))
