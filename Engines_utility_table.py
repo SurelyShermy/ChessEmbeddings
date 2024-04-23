@@ -1,10 +1,11 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def get_custom_utility(content):
 
     # Find the start and end of the utility values matrix
-    start_index = content.find('--------------------------------------------------------------------------------------------------------------------------')
-    end_index = content.find('==========================================================================================================================')
+    start_index = content.find('--------------------------------------------------------------------------------------------------------------------')
+    end_index = content.find('================================================================================================================')
 
     # Extract the utility values matrix
     utility_matrix = content[start_index:end_index].strip().split('\n')[3:]
@@ -13,48 +14,72 @@ def get_custom_utility(content):
     moves = [line.split()[0] for line in utility_matrix]
 
     # Extract the utility values
-    utility_values = [line.split()[1:] for line in utility_matrix]
+    matrix = []
+    int_evals = []
+    for line in utility_matrix:
+        parts = line.split()
+        evaluations = parts[1:]  # Skip the move name
+        
+        for e in evaluations:
+            e = e.replace('+', '')
+            if e.endswith('X'):
+                e = e.replace('X', '')
+                int_evals.append(int(e)*10)
+            elif e.endswith('x'):
+                print(e)
+                e = e.replace('x', '')
+                print(e)
+                int_evals.append(int(e)*-10)
+            elif "-M" in e:
+                int_evals.append(-10000)
+            elif "M" in e:
+                int_evals.append(10000)
+            else:
+                int_evals.append(int(e))
+        matrix.append(int_evals)
+        int_evals = []
 
-    # Find the maximum number of columns in the utility values matrix
-    max_columns = max(len(row) for row in utility_values)
+    # Convert to a numpy array
+    matrix = np.array(matrix)
+    # Calculate mean and variance for each column
+    means = np.mean(matrix, axis=0)
 
-    # Pad the rows with missing values using a default value (e.g., 0)
-    default_value = 0
-    padded_utility_values = [row + [default_value] * (max_columns - len(row)) for row in utility_values]
+    variances = np.var(matrix, axis=0)
+    # Create a range for the x-axis based on the number of columns
+    x_axis = range(1, means.shape[0]+1)
 
-    # Convert utility values to NumPy array
-    utility_array = np.array(padded_utility_values, dtype=int)
+    # Plotting
+    plt.figure(figsize=(14, 7))
 
-    # # Print the extracted data
-    # print("Moves:")
-    # print(moves)
-    # print("\nUtility Values Matrix:")
-    # print(utility_array)
+    # Plot means
+    plt.subplot(1, 2, 1)  # 1 row, 2 columns, 1st subplot
+    plt.plot(x_axis, means, marker='o', linestyle='-', color='b')
+    plt.title('Mean of Evaluations by Column')
+    plt.xlabel('Column Index (Depth)')
+    plt.ylabel('Mean Evaluation')
+    plt.grid(True)
 
-    # print(len(utility_array),len(moves))
+    # Plot variances
+    plt.subplot(1, 2, 2)  # 1 row, 2 columns, 2nd subplot
+    plt.plot(x_axis, variances, marker='o', linestyle='-', color='r')
+    plt.title('Variance of Evaluations by Column')
+    plt.xlabel('Column Index (Depth)')
+    plt.ylabel('Variance Evaluation')
+    plt.grid(True)
 
-    # Calculate the average utility value for each move from depth 10 onwards
-    average_utilities = np.mean(utility_array[:,10:], axis=1)
-    # print("\nAverage Utility Values:")
-    # print(average_utilities)
-    # print(len(average_utilities))
-
-    # # Calculate the variance of the utility values as a function of depth
-    # variances = np.var(utility_array, axis=0)
-    # print("\nVariances of Utility Values:")
-    # print(variances)
-    # #plot this variance
-    # import matplotlib.pyplot as plt
-    # plt.plot(variances)
-    # plt.xlabel('Depth')
-    # plt.ylabel('Variance')
-    # plt.title('Variance of Utility Values as a Function of Depth')
-    # plt.show()
-
-
-    # find the move which corresponds the max of average_utilities
-    max_utility = np.argmax(average_utilities)
-    # best_move = moves[max_utility_index]
-    return max_utility
+    # Show the plot
+    plt.tight_layout()  # Adjusts subplot params so that subplots fit into the figure area.
+    plt.show()
+    return
     # print("\nBest Move:", best_move)
     # print("\nAverage Utility Value of Best Move:", average_utilities[max_utility_index])
+def main():
+    # Read the content of the utility table file
+    with open('variance_mean_extraction_example.aif', 'r') as file:
+        content = file.read()
+
+    # Get the custom utility values
+    get_custom_utility(content)
+    return
+if __name__ == "__main__":
+    main()
