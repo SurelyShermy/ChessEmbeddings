@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader, Dataset
 import numpy as np
 from data_loader import get_dataloader
 from generate_dataset import prep_data
-#from embedding_model import FullyConnectedNN
+from embedding_model import FullyConnectedNN
 from model_file import ChessboardEmbeddingModel
 import os
 # Assuming `ChessBoardEmbeddingModel` is defined as per previous discussions,
@@ -48,7 +48,8 @@ train_dataloader = get_dataloader(train_board_pairs, train_distances, batch_size
 val_dataloader = get_dataloader(val_board_pairs, val_distances, batch_size=64)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = ChessboardEmbeddingModel().to(device)
+model = FullyConnectedNN().to(device)
+#model = ChessboardEmbeddingModel().to(device)
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 best_val_loss = np.double('inf')
