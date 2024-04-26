@@ -83,11 +83,11 @@ for epoch in range(num_epochs):
 
     val_loss /= len(val_dataloader)
 
-    print(f"Epoch {epoch + 1}, Training Loss: {train_loss:.4f}, Validation Loss: {val_loss:.4f}")
+    print("Epoch", epoch+1, ", Training Loss: ",train_loss, ", Validation Loss:", val_loss)
 
     if val_loss < best_val_loss:
         best_val_loss = val_loss
         # torch.save(model.state_dict(), os.path.join(directory, f'/{epoch}_model.pth'))
-        print(f"Saved new best model at epoch {epoch + 1} with Validation Loss = {val_loss:.4f}")
+        print("Saved new best model at epoch", epoch+1, "with Validation Loss = ", val_loss)
 
 torch.save(model.state_dict(), os.path.join(directory,'/chess_embedding_model.pth'))

@@ -17,7 +17,7 @@ def process_aif_files(directory, save_dir):
                 # Call the parse_games_from_aif function with the filename and content
                 parse_games_from_aif(filename, content, save_dir)
         except:
-            print(f"Error in {filename}")
+            print("Error in", filename)
             pass
 
 if __name__ == "__main__":

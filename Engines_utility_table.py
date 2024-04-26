@@ -19,23 +19,23 @@ def get_custom_utility(content):
     for line in utility_matrix:
         parts = line.split()
         evaluations = parts[1:]  # Skip the move name
-        
+        #log5+abs(util)
         for e in evaluations:
             e = e.replace('+', '')
             if e.endswith('X'):
                 e = e.replace('X', '')
-                int_evals.append(int(e)*10)
+                int_evals.append(np.log(int(e)*10))
             elif e.endswith('x'):
                 print(e)
                 e = e.replace('x', '')
                 print(e)
-                int_evals.append(int(e)*-10)
+                int_evals.append(-np.log(5+int(e)*10))
             elif "-M" in e:
-                int_evals.append(-10000)
+                int_evals.append(-np.log(5+10000))
             elif "M" in e:
-                int_evals.append(10000)
+                int_evals.append(np.log(10000+5))
             else:
-                int_evals.append(int(e))
+                int_evals.append(np.sign(int(e))*np.log(5+np.abs(int(e))))
         matrix.append(int_evals)
         int_evals = []
 
