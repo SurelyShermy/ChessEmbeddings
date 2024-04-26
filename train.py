@@ -31,11 +31,11 @@ class ChessDataset(Dataset):
 
 def contrastive_loss(embedding1, embedding2, distance, margin=1.0):
     """Calculate contrastive loss."""
-    #euclidean_distance = torch.nn.functional.pairwise_distance(embedding1, embedding2)
-    cosine_distance = torch.nn.functional.cosine_similarity(embedding1, embedding2)
+    distance_2 = torch.nn.functional.pairwise_distance(embedding1, embedding2)
+    #distance_2 = torch.nn.functional.cosine_similarity(embedding1, embedding2)
 
-    loss = torch.mean((1 - distance) * torch.pow(cosine_distance, 2) +
-                      (distance) * torch.pow(torch.clamp(margin - cosine_distance, min=0.0), 2))
+    loss = torch.mean((1 - distance) * torch.pow(distance_2, 2) +
+                      (distance) * torch.pow(torch.clamp(margin - distance_2, min=0.0), 2))
     return loss
 
 # Model, optimizer, and data loading
