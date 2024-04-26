@@ -24,5 +24,5 @@ if __name__ == "__main__":
     # Specify the directory containing the .aif files
     # directory = '/shared/projects/regan/Chess/CSE702/AIF'
     directory = './AIFS'
-    save_dir = './game_dataset'
+    save_dir = './games_dataset'
     process_aif_files(directory, save_dir)

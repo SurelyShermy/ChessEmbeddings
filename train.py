@@ -40,7 +40,7 @@ def contrastive_loss(embedding1, embedding2, distance, margin=1.0):
 
 # train_board_pairs, train_distances = [...], [...]  # Training data
 # val_board_pairs, val_distances = [...], [...]      # Validation data
-directory = "./game_dataset" 
+directory = "./games_dataset" 
 train_board_pairs, train_distances, val_board_pairs, val_distances = prep_data(directory)
 train_dataloader = get_dataloader(train_board_pairs, train_distances, batch_size=64)
 val_dataloader = get_dataloader(val_board_pairs, val_distances, batch_size=64)
@@ -90,4 +90,4 @@ for epoch in range(num_epochs):
         # torch.save(model.state_dict(), os.path.join(directory, f'/{epoch}_model.pth'))
         print("Saved new best model at epoch", epoch+1, "with Validation Loss = ", val_loss)
 
-torch.save(model.state_dict(), os.path.join(directory,'/chess_embedding_model.pth'))
+torch.save(model.state_dict(), os.path.join(directory,'chess_embedding_model.pth'))

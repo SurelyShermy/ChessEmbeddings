@@ -1,3 +1,5 @@
 .npy
 /game_dataset
 .aif
+./games_dataset
+./AIFS
