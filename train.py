@@ -5,8 +5,8 @@ from torch.utils.data import DataLoader, Dataset
 import numpy as np
 from data_loader import get_dataloader
 from generate_dataset import prep_data
-from embedding_model import FullyConnectedNN
-
+#from embedding_model import FullyConnectedNN
+from model_file import ChessboardEmbeddingModel
 import os
 # Assuming `ChessBoardEmbeddingModel` is defined as per previous discussions,
 # focusing on attention mechanisms for embedding generation.
@@ -31,9 +31,11 @@ class ChessDataset(Dataset):
 
 def contrastive_loss(embedding1, embedding2, distance, margin=1.0):
     """Calculate contrastive loss."""
-    euclidean_distance = torch.nn.functional.pairwise_distance(embedding1, embedding2)
-    loss = torch.mean((1 - distance) * torch.pow(euclidean_distance, 2) +
-                      (distance) * torch.pow(torch.clamp(margin - euclidean_distance, min=0.0), 2))
+    #euclidean_distance = torch.nn.functional.pairwise_distance(embedding1, embedding2)
+    cosine_distance = torch.nn.functional.cosine_similarity(embedding1, embedding2)
+
+    loss = torch.mean((1 - distance) * torch.pow(cosine_distance, 2) +
+                      (distance) * torch.pow(torch.clamp(margin - cosine_distance, min=0.0), 2))
     return loss
 
 # Model, optimizer, and data loading
@@ -46,7 +48,7 @@ train_dataloader = get_dataloader(train_board_pairs, train_distances, batch_size
 val_dataloader = get_dataloader(val_board_pairs, val_distances, batch_size=64)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = FullyConnectedNN().to(device)
+model = ChessboardEmbeddingModel().to(device)
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 best_val_loss = np.double('inf')

@@ -1,3 +1,6 @@
+import torch
+import torch.nn as nn
+
 class ChessboardEmbeddingModel(nn.Module):
     def __init__(self, embedding_size):
         super(ChessboardEmbeddingModel, self).__init__()
