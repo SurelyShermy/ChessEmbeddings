@@ -1,6 +1,5 @@
 import re
 import os
-from Engines_utility_table import get_custom_utility
 import numpy as np
 def parse_games_from_aif(filename, content, save_dir):
     """
